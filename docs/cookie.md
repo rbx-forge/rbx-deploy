@@ -9,7 +9,7 @@
 | `rbx init create-group`, `create-universe`, `create-place`, `rename-place`, `rename-universe` | Open Cloud cannot create or rename these | **required** |
 | `rbx init list-groups` | "The groups you are in" needs a session | **required** |
 | `rbx init list-universes`, `list-places` | These listings are public | not needed |
-| `rbx meta init`, `rbx meta pull` | Reading `server_fill`, `allow_copying`, `studio_access_to_apis_allowed`, `beta_mode`. Without a cookie they are skipped and reported | optional |
+| `rbx meta init`, `rbx meta pull` | Reading `server_fill`, `allow_copying`, `studio_access_to_apis_allowed`, `mesh_and_image_apis_allowed`, `beta_mode`. Without a cookie they are skipped and reported | optional |
 | `rbx meta sync` | Reading those fields back before it plans, when the config declares one: without a cookie they are compared with the lockfile. Writing them, plus `visibility`, `audience`, and the experience's own icon and thumbnails | optional to read, **required to write those fields** |
 | `rbx import` | Its place listing is public; the `meta` step it runs resolves the cookie as usual | not needed for the listing |
 

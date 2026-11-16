@@ -34,6 +34,7 @@ const COOKIE_FIELDS: &[&str] = &[
     "allow_copying",
     "server_fill",
     "studio_access_to_apis_allowed",
+    "mesh_and_image_apis_allowed",
     "beta_mode",
     "genre",
     "paid_access",
@@ -86,6 +87,7 @@ pub(crate) fn compare_read(lock: &GameLock, remote: &RemoteRead, has_cookie: boo
         visibility,
         audience,
         studio_access_to_apis_allowed,
+        mesh_and_image_apis_allowed,
         beta_mode,
         private_server,
         devices:
@@ -183,6 +185,11 @@ pub(crate) fn compare_read(lock: &GameLock, remote: &RemoteRead, has_cookie: boo
             "studio_access_to_apis_allowed",
             studio_access_to_apis_allowed,
             read.studio_access_to_apis_allowed,
+        );
+        c.recorded(
+            "mesh_and_image_apis_allowed",
+            mesh_and_image_apis_allowed,
+            read.mesh_and_image_apis_allowed,
         );
         c.recorded("beta_mode", beta_mode, read.beta_mode);
         c.recorded("genre", genre, read.genre);

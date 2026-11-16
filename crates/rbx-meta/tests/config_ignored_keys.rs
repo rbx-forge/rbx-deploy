@@ -101,6 +101,8 @@ fn a_config_of_known_keys_reports_nothing() {
 name = "Test"
 genre = "all"
 engine_avatar_settings = "rbxavatar.toml"
+studio_access_to_apis_allowed = true
+mesh_and_image_apis_allowed = true
 
 [game.devices]
 desktop = true
@@ -110,6 +112,7 @@ type = "r15"
 
 [envs.prod]
 name = "Test (prod)"
+mesh_and_image_apis_allowed = false
 
 [envs.prod.permissions]
 third_party_teleport = true
@@ -120,6 +123,31 @@ client_teleport = true
     );
 
     assert!(found.is_empty(), "{found:?}");
+}
+
+/// Read, not merely tolerated: the value lands in `[game]` and an env
+/// overrides it, as Studio access does beside it.
+#[test]
+fn the_mesh_and_image_toggle_is_read_and_overridden_per_env() {
+    let (config, found) = Config::parse(
+        r#"
+[game]
+studio_access_to_apis_allowed = true
+mesh_and_image_apis_allowed = true
+
+[envs.prod]
+mesh_and_image_apis_allowed = false
+"#,
+    )
+    .expect("valid config");
+
+    assert!(found.is_empty(), "{found:?}");
+    assert_eq!(config.game.mesh_and_image_apis_allowed, Some(true));
+
+    let mut prod = config.game.clone();
+    prod.apply_overlay(&config.envs["prod"]);
+    assert_eq!(prod.mesh_and_image_apis_allowed, Some(false));
+    assert_eq!(prod.studio_access_to_apis_allowed, Some(true));
 }
 
 /// Unknown keys are reported, never rejected: a config written for a newer

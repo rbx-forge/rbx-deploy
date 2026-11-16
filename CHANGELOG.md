@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`mesh_and_image_apis_allowed` in `rbxmeta.toml`**, the Creator Hub's
+  "Allow Mesh / Image APIs", which `EditableMesh` and `EditableImage` need in a
+  published experience. It works like `studio_access_to_apis_allowed` beside
+  it: `sync` writes it with the cookie, `pull` and `init` read it, `check`
+  compares it with the lockfile and, with a cookie, with Roblox, and an env can
+  override it. Roblox accepts it only from an owner who is 13+ and ID verified.
+
 ## [0.18.0] - 2026-11-11
 
 ### Changed

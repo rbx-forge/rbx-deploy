@@ -255,7 +255,8 @@ async fn run_with(
     if writes_with_cookie && cookie.is_none() {
         bail!(
             "Cannot apply legacy / cookie-only fields (server_fill / allow_copying / visibility / \
-             studio_access_to_apis_allowed / beta_mode / genre / avatar / \
+             studio_access_to_apis_allowed / mesh_and_image_apis_allowed / beta_mode / \
+             genre / avatar / \
              engine_avatar_settings / paid_access / permissions) without a cookie. \
              Pass --cookie, set RBX_COOKIE, or sign in to Roblox Studio."
         );
@@ -363,6 +364,7 @@ fn manages_cookie_fields(game: &Game) -> bool {
     game.allow_copying.is_some()
         || game.server_fill.is_some()
         || game.studio_access_to_apis_allowed.is_some()
+        || game.mesh_and_image_apis_allowed.is_some()
         || game.beta_mode.is_some()
         || game.genre.is_some()
         || game.paid_access.is_some()
@@ -580,6 +582,7 @@ async fn apply_plan(
         report_engine_echo(patch, &response);
         let el = lockfile.env_mut(env);
         el.game.studio_access_to_apis_allowed = game.studio_access_to_apis_allowed;
+        el.game.mesh_and_image_apis_allowed = game.mesh_and_image_apis_allowed;
         el.game.permissions = game.permissions;
         el.game.avatar = game.avatar;
         el.game.paid_access = game.paid_access.clone();
@@ -1531,6 +1534,61 @@ mod ordering_tests {
             lockfile.env_view("test").game.engine_avatar_settings_hash,
             Some("deadbeef".to_string()),
             "the hash recorded is the one the patch carried"
+        );
+    }
+
+    /// From the config to the wire: the toggle reaches the legacy PATCH with
+    /// the `is` prefix the read uses, and the lockfile records it once sent.
+    #[tokio::test]
+    async fn the_mesh_and_image_toggle_is_sent_and_recorded() {
+        let server = MockServer::start().await;
+        accept_everything(&server).await;
+        let game = Game {
+            mesh_and_image_apis_allowed: Some(true),
+            ..Game::default()
+        };
+        let plan = build_plan(
+            &game,
+            &MediaConfig::default(),
+            &GameLock::default(),
+            &MediaLockfile::default(),
+            std::path::Path::new("."),
+        )
+        .expect("a plan with no media never reads a file");
+        let session = session_service(200).await;
+        let dir = tempfile::tempdir().expect("tempdir");
+        let mut lockfile = Lockfile::default();
+
+        apply_plan(
+            &client(&server, &session, &format!("live-{}", server.uri())),
+            &plan,
+            &game,
+            ApplyTarget {
+                env: "test",
+                universe_id: UNIVERSE,
+                place_id: PLACE,
+            },
+            &mut lockfile,
+            &dir.path().join(LOCKFILE_NAME),
+        )
+        .await
+        .expect("apply_plan");
+
+        let bodies: Vec<serde_json::Value> = server
+            .received_requests()
+            .await
+            .expect("the mock server records requests")
+            .iter()
+            .filter(|r| r.url.path() == CONFIG)
+            .filter_map(|r| serde_json::from_slice(&r.body).ok())
+            .collect();
+        assert_eq!(
+            bodies,
+            vec![json!({ "isMeshTextureApiAccessAllowed": true })]
+        );
+        assert_eq!(
+            lockfile.env_view("test").game.mesh_and_image_apis_allowed,
+            Some(true)
         );
     }
 

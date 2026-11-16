@@ -149,6 +149,34 @@ fn with_a_cookie_the_cookie_fields_are_compared() {
     );
 }
 
+/// Read from the same v1 configuration as Studio access, so compared the same
+/// way: with the cookie, and only once the lockfile records it.
+#[test]
+fn the_mesh_and_image_toggle_is_a_cookie_field() {
+    let locked = GameLock {
+        mesh_and_image_apis_allowed: Some(true),
+        ..Default::default()
+    };
+    let mut remote = read(json!({}), json!({}));
+    remote.universe_config.mesh_and_image_apis_allowed = Some(false);
+
+    assert_eq!(
+        compare_read(&locked, &remote, true).differences,
+        vec!["mesh_and_image_apis_allowed: lockfile true, Roblox false"]
+    );
+
+    let keyless = compare_read(&locked, &remote, false);
+    assert!(keyless.differences.is_empty(), "{:?}", keyless.differences);
+    assert!(
+        keyless
+            .not_compared
+            .iter()
+            .any(|l| l.contains("Studio cookie") && l.contains("mesh_and_image_apis_allowed")),
+        "{:?}",
+        keyless.not_compared
+    );
+}
+
 #[test]
 fn the_write_only_fields_and_the_media_are_always_listed() {
     let report = compare_read(&GameLock::default(), &read(json!({}), json!({})), true);

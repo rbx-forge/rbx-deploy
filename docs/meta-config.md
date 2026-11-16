@@ -16,6 +16,7 @@ server_size = 50
 voice_chat = false
 visibility = "public"        # cookie to write
 studio_access_to_apis_allowed = true   # cookie
+mesh_and_image_apis_allowed = true     # cookie
 beta_mode = false                      # cookie
 
 [game.private_server]
@@ -57,6 +58,7 @@ visibility = "private"
 | `audience` | string[] | cookie | With `limited` only: `"playtesters"`, `"friends"` (Community Members on a group experience), or both |
 | `allow_copying` | bool | cookie | The "copy this place" button. Not a protection |
 | `studio_access_to_apis_allowed` | bool | cookie | Studio scripts may call data stores and Open Cloud |
+| `mesh_and_image_apis_allowed` | bool | cookie | "Allow Mesh / Image APIs": `EditableMesh` and `EditableImage` work in the published experience. Roblox accepts it only from an owner who is 13+ and ID verified |
 | `beta_mode` | bool | cookie | Experience Beta: hidden from Home recommendations |
 | `genre` | string | cookie | Legacy genre: `all`, `tutorial`, `scary`, `town_and_city`, `war`, `funny`, `fantasy`, `adventure`, `sci_fi`, `pirate`, `fps`, `rpg`, `sports`, `ninja`, `wild_west` |
 | `engine_avatar_settings` | path | cookie | A `.toml` or `.json` avatar document. See [below](#gameengine_avatar_settings) |
@@ -234,6 +236,7 @@ The API key cannot write these, so a `sync` whose plan touches one needs a cooki
 | `game.server_fill` | [Server fill](https://devforum.roblox.com/t/a-places-server-fill-settings-cant-be-kept-consistent-across-environments-or-managed-in-automated-deployments/4892162) |
 | `game.allow_copying` | [Allow Copying](https://devforum.roblox.com/t/a-places-allow-copying-setting-cant-be-read-or-enforced-in-automated-deployments/4892136) |
 | `game.studio_access_to_apis_allowed` | [Studio access to API services](https://devforum.roblox.com/t/enable-studio-access-to-api-services-cant-be-managed-per-environment-in-automated-deployments/4892091) |
+| `game.mesh_and_image_apis_allowed` | |
 | `game.beta_mode` | |
 | `game.genre` | [Experience genre](https://devforum.roblox.com/t/experience-genre-cant-be-kept-consistent-across-environments-or-managed-in-automated-deployments/4892081) |
 | `game.avatar.*`, `game.engine_avatar_settings` | [Avatar settings](https://devforum.roblox.com/t/experience-avatar-settings-cant-be-kept-consistent-across-environments-or-managed-in-automated-deployments/4892110) |

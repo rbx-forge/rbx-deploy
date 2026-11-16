@@ -59,6 +59,7 @@ mod build_plan {
         g.beta_mode = Some(false);
         g.allow_copying = Some(true);
         g.studio_access_to_apis_allowed = Some(true);
+        g.mesh_and_image_apis_allowed = Some(true);
         g.private_server = Some(PrivateServer { price: 100 });
         g.devices.desktop = Some(true);
         g.social_links.discord = Some(link("Discord", "https://d.test"));
@@ -85,6 +86,7 @@ mod build_plan {
         locked.beta_mode = Some(true);
         locked.allow_copying = Some(true);
         locked.studio_access_to_apis_allowed = Some(true);
+        locked.mesh_and_image_apis_allowed = Some(true);
         locked.server_fill = Some(ServerFill::Automatic);
 
         let plan = plan_for(&game(), &locked);
@@ -122,6 +124,7 @@ mod build_plan {
         g.voice_chat = Some(true); // universe
         g.allow_copying = Some(true); // place, legacy
         g.studio_access_to_apis_allowed = Some(true); // universe config, legacy
+        g.mesh_and_image_apis_allowed = Some(true); // universe config, legacy
         g.visibility = Some(Visibility::Public); // activate/deactivate
         g.beta_mode = Some(true); // experience releases
 
@@ -141,7 +144,10 @@ mod build_plan {
         );
         assert_eq!(
             plan.universe_legacy_patch.expect("universe legacy").body,
-            json!({ "studioAccessToApisAllowed": true })
+            json!({
+                "studioAccessToApisAllowed": true,
+                "isMeshTextureApiAccessAllowed": true,
+            })
         );
         assert_eq!(plan.visibility_change, Some(Access::Public));
         assert_eq!(plan.beta_mode_change, Some(true));
@@ -560,6 +566,33 @@ mod legacy_patches {
         let patch = plan_for(&g, &l).universe_legacy_patch.expect("patch");
 
         assert_eq!(patch.body, json!({ "studioAccessToApisAllowed": false }));
+    }
+
+    /// Unlike Studio access, the write keeps the `is` prefix the read has.
+    #[test]
+    fn mesh_and_image_apis_go_to_the_universe_config_endpoint_with_their_prefix() {
+        let mut g = game();
+        g.mesh_and_image_apis_allowed = Some(true);
+        let mut l = lock();
+        l.mesh_and_image_apis_allowed = Some(false);
+
+        let patch = plan_for(&g, &l).universe_legacy_patch.expect("patch");
+
+        assert_eq!(patch.body, json!({ "isMeshTextureApiAccessAllowed": true }));
+        assert_eq!(
+            patch.descriptions,
+            vec!["mesh_and_image_apis_allowed: false → true"]
+        );
+    }
+
+    #[test]
+    fn an_unchanged_mesh_and_image_toggle_sends_nothing() {
+        let mut g = game();
+        g.mesh_and_image_apis_allowed = Some(true);
+        let mut l = lock();
+        l.mesh_and_image_apis_allowed = Some(true);
+
+        assert!(plan_for(&g, &l).universe_legacy_patch.is_none());
     }
 }
 
