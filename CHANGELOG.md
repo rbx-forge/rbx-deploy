@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.19.0] - 2026-11-16
+
 ### Added
 
 - **`mesh_and_image_apis_allowed` in `rbxmeta.toml`**, the Creator Hub's
@@ -1491,7 +1493,8 @@ as. The cookie is never written to disk. See `docs/cookie.md`.
 documented field names and a `schema_version`. Ids are strings, prices are
 numbers, and an optional field is absent rather than null.
 
-[Unreleased]: https://github.com/rbx-forge/rbx-deploy/compare/v0.18.0...HEAD
+[Unreleased]: https://github.com/rbx-forge/rbx-deploy/compare/v0.19.0...HEAD
+[0.19.0]: https://github.com/rbx-forge/rbx-deploy/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/rbx-forge/rbx-deploy/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/rbx-forge/rbx-deploy/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/rbx-forge/rbx-deploy/compare/v0.15.0...v0.16.0
