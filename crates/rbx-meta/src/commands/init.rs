@@ -107,6 +107,7 @@ pub async fn run(
         }
     };
     let studio_access_to_apis_allowed = universe_config.studio_access_to_apis_allowed;
+    let mesh_and_image_apis_allowed = universe_config.mesh_and_image_apis_allowed;
     let avatar = Avatar {
         kind: universe_config
             .universe_avatar_type
@@ -207,6 +208,7 @@ pub async fn run(
         visibility,
         audience,
         studio_access_to_apis_allowed,
+        mesh_and_image_apis_allowed,
         beta_mode,
         // Write-only on Roblox's side, so there is nothing to adopt: an
         // `init` that invented a value here would be writing a claim about

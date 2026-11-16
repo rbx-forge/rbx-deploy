@@ -44,6 +44,19 @@ pub(crate) fn build_universe_legacy_patch(
         }
     }
 
+    // Spelled with its `is` prefix, unlike Studio access just above: the v2
+    // request names it so, and the read and write agree on it.
+    if let Some(desired) = game.mesh_and_image_apis_allowed {
+        if lock.mesh_and_image_apis_allowed != Some(desired) {
+            body.insert("isMeshTextureApiAccessAllowed".to_string(), json!(desired));
+            descriptions.push(format!(
+                "mesh_and_image_apis_allowed: {} → {}",
+                show_opt(lock.mesh_and_image_apis_allowed),
+                desired
+            ));
+        }
+    }
+
     if let Some(desired) = game.permissions {
         if lock.permissions != Some(desired) {
             // Sent whole, because Roblox reads it whole. `config::Permissions`

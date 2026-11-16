@@ -89,6 +89,13 @@ pub struct Game {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub studio_access_to_apis_allowed: Option<bool>,
 
+    /// The Creator Hub's "Allow Mesh / Image APIs": whether a published
+    /// experience may use `EditableMesh` and `EditableImage`. Roblox accepts it
+    /// only from an owner who is 13+ and ID verified. Requires cookie (universe
+    /// configuration endpoint).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mesh_and_image_apis_allowed: Option<bool>,
+
     /// Beta mode toggle: limits the experience's reach by hiding it from
     /// Home Recommendations. Requires cookie (experience-releases endpoint).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -246,6 +253,7 @@ impl Game {
             && self.visibility.is_none()
             && self.audience.is_none()
             && self.studio_access_to_apis_allowed.is_none()
+            && self.mesh_and_image_apis_allowed.is_none()
             && self.beta_mode.is_none()
             && self.permissions.is_none()
             && self.avatar.is_empty()
@@ -286,6 +294,9 @@ impl Game {
         }
         if let Some(v) = overlay.studio_access_to_apis_allowed {
             self.studio_access_to_apis_allowed = Some(v);
+        }
+        if let Some(v) = overlay.mesh_and_image_apis_allowed {
+            self.mesh_and_image_apis_allowed = Some(v);
         }
         if let Some(v) = overlay.beta_mode {
             self.beta_mode = Some(v);
@@ -592,6 +603,7 @@ place_id = 0          # Your root place ID (omit if you use --env)
 # visibility = "public"              # "public" | "limited" | "private", REQUIRES cookie to change
 # audience = ["playtesters"]         # limited only: "playtesters" and/or "friends" (community members for a group)
 # studio_access_to_apis_allowed = false  # REQUIRES cookie. Lets Studio scripts call Open Cloud / data store APIs
+# mesh_and_image_apis_allowed = false    # REQUIRES cookie. EditableMesh / EditableImage in published experiences
 # beta_mode = false                      # REQUIRES cookie. true = hides from Home Recommendations (Experience Beta)
 
 # Private servers. Omit this table to disable private servers entirely.

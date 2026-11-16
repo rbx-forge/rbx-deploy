@@ -105,6 +105,7 @@ impl LegacyEnum {
 #[serde(rename_all = "camelCase", default)]
 pub struct UniverseConfigLegacy {
     pub studio_access_to_apis_allowed: Option<bool>,
+    pub mesh_and_image_apis_allowed: Option<bool>,
 
     /// `['MorphToR6' = 1, 'PlayerChoice' = 2, 'MorphToR15' = 3]`
     pub universe_avatar_type: Option<LegacyEnum>,
@@ -135,11 +136,14 @@ pub struct UniverseConfigLegacy {
 /// The shim exists for one field. The GET spells it
 /// `isStudioAccessToApisAllowed` and the PATCH spells it without the prefix;
 /// every other field is spelled the same on both sides.
+/// `isMeshTextureApiAccessAllowed` is not a second one: it keeps the prefix on
+/// both sides, in the captured GET body and in the spec's v2 request.
 pub fn parse_v1_universe_config(body: &str) -> Result<UniverseConfigLegacy> {
     #[derive(Deserialize, Default)]
     #[serde(rename_all = "camelCase", default)]
     struct V1ConfigResponse {
         is_studio_access_to_apis_allowed: Option<bool>,
+        is_mesh_texture_api_access_allowed: Option<bool>,
         universe_avatar_type: Option<LegacyEnum>,
         universe_animation_type: Option<LegacyEnum>,
         universe_collision_type: Option<LegacyEnum>,
@@ -160,6 +164,7 @@ Body: {}",
 
     Ok(UniverseConfigLegacy {
         studio_access_to_apis_allowed: parsed.is_studio_access_to_apis_allowed,
+        mesh_and_image_apis_allowed: parsed.is_mesh_texture_api_access_allowed,
         universe_avatar_type: parsed.universe_avatar_type,
         universe_animation_type: parsed.universe_animation_type,
         universe_collision_type: parsed.universe_collision_type,

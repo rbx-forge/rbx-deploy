@@ -57,6 +57,7 @@ pub(crate) struct ConfirmedReads {
     pub allow_copying: Option<bool>,
     pub server_fill: Option<ServerFill>,
     pub studio_access_to_apis_allowed: Option<bool>,
+    pub mesh_and_image_apis_allowed: Option<bool>,
     pub beta_mode: Option<bool>,
     pub genre: Option<Genre>,
     pub paid_access: Option<PaidAccess>,
@@ -143,6 +144,9 @@ pub(super) fn reconcile_lock(
     fresh.studio_access_to_apis_allowed = confirmed
         .studio_access_to_apis_allowed
         .or(previous.studio_access_to_apis_allowed);
+    fresh.mesh_and_image_apis_allowed = confirmed
+        .mesh_and_image_apis_allowed
+        .or(previous.mesh_and_image_apis_allowed);
     fresh.beta_mode = confirmed.beta_mode.or(previous.beta_mode);
     fresh.genre = confirmed.genre.or(previous.genre);
     fresh.paid_access = confirmed
@@ -171,6 +175,11 @@ pub(super) fn write_game_block(doc: &mut DocumentMut, key: &str, config: &Config
         t,
         "studio_access_to_apis_allowed",
         game.studio_access_to_apis_allowed,
+    );
+    set_opt_bool(
+        t,
+        "mesh_and_image_apis_allowed",
+        game.mesh_and_image_apis_allowed,
     );
     set_opt_bool(t, "beta_mode", game.beta_mode);
 
@@ -443,6 +452,11 @@ pub(super) fn write_env_overlay(doc: &mut DocumentMut, env: &str, overlay: &EnvO
         "studio_access_to_apis_allowed",
         overlay.studio_access_to_apis_allowed,
     );
+    set_opt_bool(
+        t,
+        "mesh_and_image_apis_allowed",
+        overlay.mesh_and_image_apis_allowed,
+    );
     set_opt_bool(t, "beta_mode", overlay.beta_mode);
 
     // sub-tables under envs.<env>.<sub>
@@ -584,6 +598,7 @@ mod tests {
                 visibility: Some(Visibility::Private),
                 audience: Some([Audience::Friends].into()),
                 studio_access_to_apis_allowed: Some(false),
+                mesh_and_image_apis_allowed: Some(true),
                 beta_mode: Some(false),
                 private_server: Some(PrivateServer { price: 0 }),
                 devices: Devices {
@@ -653,6 +668,7 @@ mod tests {
                 visibility: Some(Visibility::Limited),
                 audience: Some([Audience::Playtesters, Audience::Friends].into()),
                 studio_access_to_apis_allowed: Some(true),
+                mesh_and_image_apis_allowed: Some(false),
                 beta_mode: Some(true),
                 permissions: Some(Permissions {
                     third_party_teleport: true,
@@ -921,6 +937,7 @@ mod reconcile_lock_tests {
             genre: Some(Genre::All),
             paid_access: Some(PaidAccess::Free),
             studio_access_to_apis_allowed: Some(false),
+            mesh_and_image_apis_allowed: Some(false),
             beta_mode: Some(false),
             allow_copying: Some(false),
             server_fill: Some(ServerFill::Automatic),
@@ -941,6 +958,7 @@ mod reconcile_lock_tests {
             genre: Some(Genre::WildWest),
             paid_access: Some(PaidAccess::Paid { price: 25 }),
             studio_access_to_apis_allowed: Some(true),
+            mesh_and_image_apis_allowed: Some(true),
             beta_mode: Some(true),
             allow_copying: Some(true),
             server_fill: Some(ServerFill::Empty),
@@ -977,6 +995,7 @@ mod reconcile_lock_tests {
         assert_eq!(fresh.genre, Some(Genre::All));
         assert_eq!(fresh.paid_access, Some(PaidAccess::Free));
         assert_eq!(fresh.studio_access_to_apis_allowed, Some(false));
+        assert_eq!(fresh.mesh_and_image_apis_allowed, Some(false));
         assert_eq!(fresh.beta_mode, Some(false));
         assert_eq!(fresh.allow_copying, Some(false));
         assert_eq!(fresh.server_fill, Some(ServerFill::Automatic));
@@ -994,6 +1013,7 @@ mod reconcile_lock_tests {
             &ConfirmedReads {
                 genre: Some(Genre::Pirate),
                 allow_copying: Some(true),
+                mesh_and_image_apis_allowed: Some(true),
                 avatar_kind: Some(AvatarType::PlayerChoice),
                 ..ConfirmedReads::default()
             },
@@ -1002,6 +1022,7 @@ mod reconcile_lock_tests {
 
         assert_eq!(fresh.genre, Some(Genre::Pirate));
         assert_eq!(fresh.allow_copying, Some(true));
+        assert_eq!(fresh.mesh_and_image_apis_allowed, Some(true));
         assert_eq!(fresh.avatar.kind, Some(AvatarType::PlayerChoice));
         // Untouched by that read, so still the previous entry.
         assert_eq!(fresh.beta_mode, Some(false));

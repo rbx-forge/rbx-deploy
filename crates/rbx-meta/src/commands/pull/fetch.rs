@@ -79,6 +79,7 @@ pub(super) async fn fetch_env(
     let remote_allow_copying = remote.allow_copying;
     let remote_server_fill = remote.server_fill.clone();
     let remote_studio_access = universe_config.studio_access_to_apis_allowed;
+    let remote_mesh_and_image_apis = universe_config.mesh_and_image_apis_allowed;
     let remote_beta_mode = remote.beta_mode;
 
     // -----------------------------------------------------------------------
@@ -142,6 +143,13 @@ pub(super) async fn fetch_env(
         &mut overlay.studio_access_to_apis_allowed,
         remote_studio_access,
         "studio_access_to_apis_allowed",
+        &mut changes,
+    );
+    diff_apply_opt(
+        &mut config.game.mesh_and_image_apis_allowed,
+        &mut overlay.mesh_and_image_apis_allowed,
+        remote_mesh_and_image_apis,
+        "mesh_and_image_apis_allowed",
         &mut changes,
     );
     diff_apply_opt(
@@ -460,6 +468,7 @@ impl RemoteRead {
             allow_copying: self.allow_copying,
             server_fill: self.server_fill.clone(),
             studio_access_to_apis_allowed: universe_config.studio_access_to_apis_allowed,
+            mesh_and_image_apis_allowed: universe_config.mesh_and_image_apis_allowed,
             beta_mode: self.beta_mode,
             genre: universe_config
                 .genre

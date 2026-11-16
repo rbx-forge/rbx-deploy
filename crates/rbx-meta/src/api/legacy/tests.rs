@@ -56,6 +56,21 @@ fn the_real_response_body_deserializes() {
     assert_eq!(config.studio_access_to_apis_allowed, Some(false));
 }
 
+/// The mesh and image toggle keeps its `is` prefix in the GET, unlike Studio
+/// access, so a shim that stripped it the same way would read nothing.
+#[test]
+fn the_mesh_and_image_toggle_is_read_with_its_prefix() {
+    assert_eq!(parse(REAL_BODY).mesh_and_image_apis_allowed, Some(false));
+    assert_eq!(
+        parse(r#"{"isMeshTextureApiAccessAllowed": true}"#).mesh_and_image_apis_allowed,
+        Some(true)
+    );
+    assert_eq!(
+        parse(r#"{"meshTextureApiAccessAllowed": true}"#).mesh_and_image_apis_allowed,
+        None
+    );
+}
+
 /// Names resolve through the name parsers, which is what the live endpoint
 /// actually sends.
 #[test]

@@ -61,6 +61,7 @@ pub(crate) fn refresh(game: &Game, lock: &GameLock, remote: &RemoteRead) -> Refr
         visibility,
         audience,
         studio_access_to_apis_allowed,
+        mesh_and_image_apis_allowed,
         beta_mode,
         private_server,
         devices:
@@ -140,6 +141,12 @@ pub(crate) fn refresh(game: &Game, lock: &GameLock, remote: &RemoteRead) -> Refr
             game.studio_access_to_apis_allowed.as_ref(),
             studio_access_to_apis_allowed,
             read.studio_access_to_apis_allowed,
+        ),
+        mesh_and_image_apis_allowed: walk.recorded(
+            "mesh_and_image_apis_allowed",
+            game.mesh_and_image_apis_allowed.as_ref(),
+            mesh_and_image_apis_allowed,
+            read.mesh_and_image_apis_allowed,
         ),
         beta_mode: walk.recorded(
             "beta_mode",

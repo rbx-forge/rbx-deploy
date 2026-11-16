@@ -343,6 +343,12 @@
         "media": {
           "$ref": "#/definitions/MediaOverlay"
         },
+        "mesh_and_image_apis_allowed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
         "name": {
           "type": [
             "string",
@@ -505,6 +511,13 @@
             {
               "type": "null"
             }
+          ]
+        },
+        "mesh_and_image_apis_allowed": {
+          "description": "The Creator Hub's \"Allow Mesh / Image APIs\": whether a published experience may use `EditableMesh` and `EditableImage`. Roblox accepts it only from an owner who is 13+ and ID verified. Requires cookie (universe configuration endpoint).",
+          "type": [
+            "boolean",
+            "null"
           ]
         },
         "name": {

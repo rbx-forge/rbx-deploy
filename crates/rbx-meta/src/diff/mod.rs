@@ -231,6 +231,7 @@ pub fn config_to_lock(game: &Game) -> GameLock {
             _ => None,
         },
         studio_access_to_apis_allowed: game.studio_access_to_apis_allowed,
+        mesh_and_image_apis_allowed: game.mesh_and_image_apis_allowed,
         beta_mode: game.beta_mode,
         private_server: game.private_server.clone(),
         devices: game.devices.clone(),
