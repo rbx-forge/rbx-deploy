@@ -38,9 +38,12 @@ version = 2
 # moment the dependency can move:
 #   { id = "RUSTSEC-0000-0000", reason = "why it does not apply; revisit by YYYY-MM-DD" },
 #
-# Empty since plist 1.10 moved to quick-xml 0.42, which carries the fixes for
+# plist 1.10 moved to quick-xml 0.42, which carries the fixes for
 # RUSTSEC-2026-0194 and RUSTSEC-2026-0195 that were listed here.
-ignore = []
+ignore = [
+    { id = "RUSTSEC-2026-0543", reason = "an unmaintained notice, not a vulnerability, and no patched release exists; replacing chrono is a change of its own; revisit by 2027-02-23" },
+    { id = "RUSTSEC-2026-0594", reason = "cookie comes in through rbx_cookie, which only parses a Cookie; the advisory is in PrivateJar, which nothing here calls, and rbx_cookie has no release on a patched cookie; revisit by 2027-02-23" },
+]
 
 [licenses]
 version = 2
